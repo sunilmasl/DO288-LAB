@@ -1,0 +1,42 @@
+   15  lab-configure
+   18  git clone https://github.com/sunilmasl/DO288-apps
+   20  cd DO288-apps/
+   21  git status
+   22  head README.md 
+   24  lab docker-build start
+   25  cd DO288-apps/
+   26  git checkout main
+   30  ls -l | grep -i docker-build
+   31  git checkout -b docker-build
+   32  git push -u origin docker-build
+   33  git branch
+   35  ls -l ubi-echo/
+   36  cat  ubi-echo/Dockerfile 
+   37  source /usr/local/etc/ocp4.config
+   42  oc login -u ${RHT_OCP4_DEV_USER} -p ${RHT_OCP4_DEV_PASSWORD} ${RHT_OCP4_MASTER_API}
+   43  oc new-project ${RHT_OCP4_DEV_USER}-docker-build
+   44  oc new-app --name echo https://github.com/${RHT_OCP4_GITHUB_USER}/DO288-apps#docker-build --context-dir ubi-echo
+   45  oc get bc
+   46  oc logs -f bc/echo
+   47  oc status
+   48  oc get pod
+   50  oc logs echo-58b7b8c6fd-5k775 |tail -n 3
+   53  oc describe bc echo |less
+   54  oc describe is echo
+   56  oc describe deployment echo
+   57  oc get pod
+   60  vim ~/DO288-apps/ubi-echo/Dockerfile 
+   61  cd ubi-echo/
+   62  git commit -a -m 'Add a counter'
+   63  git push
+   65  oc start-build echo
+   66  oc logs -f bc/echo
+   67  oc status
+   68  oc get pod
+   70  oc get pod
+   71  oc logs echo-6d56d8695f-hzgwx | head -n 3
+   72  oc describe is echo
+   73  oc get pod
+   74  oc delete all -l app=echo
+   75  oc get all
+   76  lab docker-build finish
