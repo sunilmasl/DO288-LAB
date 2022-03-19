@@ -1,0 +1,37 @@
+  130  ########### Managing an Application with the CLI#######
+  131  lab build-template start
+  135  cd ~/DO288-apps
+  136  git checkout main
+  137  ls ~/DO288-apps/quotes
+  138  less ~/DO288-apps/quotes/get.php
+  139  source /usr/local/etc/ocp4.config
+  142  oc login -u ${RHT_OCP4_DEV_USER} -p ${RHT_OCP4_DEV_PASSWORD} ${RHT_OCP4_MASTER_API}
+  143  oc get templates -n openshift | grep php
+  144  oc new-project ${RHT_OCP4_DEV_USER}-common
+  146  oc create -f ~/DO288/labs/build-template/php-mysql-ephemeral.json
+  147  oc new-project ${RHT_OCP4_DEV_USER}-build-template
+  153  oc describe template php-mysql-ephemeral -n ${RHT_OCP4_DEV_USER}-common
+  155   cat ~/DO288/labs/build-template/create-app.sh
+  156   ~/DO288/labs/build-template/create-app.sh
+  158  oc get bc
+  161  oc get route
+  162  curl -si http://quote-$RHT_OCP4_DEV_USER.$RHT_OCP4_WILDCARD_DOMAIN/get.php
+  163  oc get pod
+  164  oc get bc
+  167  oc get builds
+  168  oc get svc
+  169  oc describe svc quotesdb 
+  170  oc get pod
+  171  oc get pod -o wide
+  172  oc describe pod quotesdb-6b7ffcc649-c69lh |grep -A 4 Environment
+  174  oc rsh quotesapi-b68c8499c-kclpw bash -c 'echo > /dev/tcp/$DATABASE_SERVICE_NAME/3306 && echo OK || echo FAIL'
+  175  oc logs quotesapi-b68c8499c-kclpw 
+  176  oc logs quotesapi-b68c8499c-kclpw | grep -i error
+  177  oc get pod
+  178  oc cp ~/DO288/labs/build-template/quote.sql quotesdb-6b7ffcc649-c69lh:/tmp/quote.sql
+  179  oc rsh -t quotesdb-6b7ffcc649-c69lh 
+  182  curl -si http://quote-$RHT_OCP4_DEV_USER.$RHT_OCP4_WILDCARD_DOMAIN/get.php
+  183  oc delete project ${RHT_OCP4_DEV_USER}-build-template
+  184  oc delete project ${RHT_OCP4_DEV_USER}-common
+  185  lab build-template finish
+  186  ################################### End of this chapter ########
