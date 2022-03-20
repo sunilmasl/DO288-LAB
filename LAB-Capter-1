@@ -1,0 +1,35 @@
+  204  #### LAB : Deploying and Managing Applications on an OpenShift Cluster #####
+  205  lab source-build start
+  206  source /usr/local/etc/ocp4.config
+  207   oc login -u ${RHT_OCP4_DEV_USER} -p ${RHT_OCP4_DEV_PASSWORD} ${RHT_OCP4_MASTER_API}
+  208  oc new-project ${RHT_OCP4_DEV_USER}-source-build
+  209  cd DO288-apps/
+  210   git checkout main
+  211  git branch
+  212  git checkout -b source-build
+  213  git branch
+  214  git push -u origin source-build
+  215  ls -l | grep -i nodejs
+  216  ls -l nodejs-helloworld/
+  218  source /usr/local/etc/ocp4.config
+  219  oc new-app --name greet --build-env npm_config_registry=http://${RHT_OCP4_NEXUS_SERVER}/repository/nodejs nodejs:12~https://github.com/${RHT_OCP4_GITHUB_USER}/DO288-apps#source-build  --context-dir nodejs-helloworld
+  220  oc get bc
+  221  oc logs -f bc/greet
+  222  ls -l nodejs-helloworld
+  223  python3 -m json.tool 
+  224  python3 -m json.tool nodejs-helloworld/package.json
+  225  vim nodejs-helloworld/package.json 
+  226  cd nodejs-helloworld
+  227  git commit -a -m 'Fixed JSON syntax'
+  228   git push
+  229  cd
+  230  oc start-build --follow bc/greet
+  231  oc status
+  232  oc get pod
+  233  oc logs greet-554dd97d8f-gfv2k 
+  234  oc get svc
+  235  oc expose svc greet
+  236  oc get route
+  237  curl http://greet-pudjsm-source-build.apps.ap46.prod.nextcle.com
+  238  lab source-build grade
+  239  lab source-build finish

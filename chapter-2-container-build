@@ -1,0 +1,100 @@
+  151  oc projects
+  152  oc project
+  153  oc describe template php-mysql-ephemeral -n ${RHT_OCP4_DEV_USER}-common
+  154  ls -l ~/LAB
+  155   cat ~/DO288/labs/build-template/create-app.sh
+  156   ~/DO288/labs/build-template/create-app.sh
+  157  less ~/DO288/labs/build-template/create-app.sh
+  158  oc get bc
+  159  oc logs -f bc/quotesapi
+  160  oc get pod
+  161  oc get route
+  162  curl -si http://quote-$RHT_OCP4_DEV_USER.$RHT_OCP4_WILDCARD_DOMAIN/get.php
+  163  oc get pod
+  164  oc get bc
+  165  oc get build/quotesapi
+  166  oc get builds/quotesapi
+  167  oc get builds
+  168  oc get svc
+  169  oc describe svc quotesdb 
+  170  oc get pod
+  171  oc get pod -o wide
+  172  oc describe pod quotesdb-6b7ffcc649-c69lh |grep -A 4 Environment
+  173   oc describe pod quotesapi-b68c8499c-kclpw | grep -A 5 Environment
+  174  oc rsh quotesapi-b68c8499c-kclpw bash -c 'echo > /dev/tcp/$DATABASE_SERVICE_NAME/3306 && echo OK || echo FAIL'
+  175  oc logs quotesapi-b68c8499c-kclpw 
+  176  oc logs quotesapi-b68c8499c-kclpw | grep -i error
+  177  oc get pod
+  178  oc cp ~/DO288/labs/build-template/quote.sql quotesdb-6b7ffcc649-c69lh:/tmp/quote.sql
+  179  oc rsh -t quotesdb-6b7ffcc649-c69lh 
+  180  curl -si 
+  181   http://quote-$RHT_OCP4_DEV_USER.$RHT_OCP4_WILDCARD_DOMAIN/get.php
+  182  curl -si http://quote-$RHT_OCP4_DEV_USER.$RHT_OCP4_WILDCARD_DOMAIN/get.php
+  183  oc delete project ${RHT_OCP4_DEV_USER}-build-template
+  184  oc delete project ${RHT_OCP4_DEV_USER}-common
+  185  lab build-template finish
+  186  ################################### End of this chapter ########
+  187  cd
+  188  cd LAB/
+  189  ls -l
+  190  history > chapter-1b
+  191  vim chapter-1b 
+  192  git add .
+  193  git commit -m "chapter-1b"
+  194  git push origin 
+  195  cd
+  196  clear
+  197  lab build-template finish
+  198  vim ~/DO288-apps/container-build/Containerfile
+  199  cat ~/DO288-apps/container-build/Containerfile
+  200  cd container-build/
+  201  git commit -a -m "Changed the Containerfile to enable running as a random uid on OpenShift"
+  202  git push
+  203* 
+  204  podman images
+  205  podman rmi -a --force
+  206  podman images
+  207  podman build --layers=false --format=docker -t do288-apache ./container-build
+  208  podman tag do288-apache quay.io/${RHT_OCP4_QUAY_USER}/do288-apache
+  209  podman images
+  210  podman tag do288-apache quay.io/${RHT_OCP4_QUAY_USER}/do288-apache
+  211  podman rmi -a --force
+  212  podman images
+  213   podman build --layers=false  --format=docker  -t do288-apache ./container-build
+  214  podman images
+  215  podman tag do288-apache quay.io/${RHT_OCP4_QUAY_USER}/do288-apache
+  216  podman rmi -a -f 
+  217  podman  images
+  218  podman build --layers=false -t do288-apache ./container-build
+  219  podman images
+  220  podman tag do288-apache quay.io/${RHT_OCP4_QUAY_USER}/do288-apache
+  221   source /usr/local/etc/ocp4.config
+  222  podman tag do288-apache quay.io/${RHT_OCP4_QUAY_USER}/do288-apache
+  223  podman images
+  224  podman push quay.io/${RHT_OCP4_QUAY_USER}/do288-apache
+  225  oc new-app --name hola quay.io/${RHT_OCP4_QUAY_USER}/do288-apache
+  226   source /usr/local/etc/ocp4.config
+  227  oc new-app --name hola quay.io/${RHT_OCP4_QUAY_USER}/do288-apache
+  228  podman images
+  229  oc new-app --name hola quay.io/sunilkumar25/do288-apache
+  230  oc new-app --name hola localhost/do288-apache
+  231  podman rmi -a -f
+  232   source /usr/local/etc/ocp4.config
+  233  podman build --layers=false --format=docker -t do288-apache ./container-build
+  234  podman images
+  235  podman tag do288-apache quay.io/${RHT_OCP4_QUAY_USER}/do288-apache
+  236  podman push quay.io/${RHT_OCP4_QUAY_USER}/do288-apache
+  237  oc new-app --name hola quay.io/${RHT_OCP4_QUAY_USER}/do288-apache
+  238  podman pod
+  239  oc get pod
+  240  oc get route
+  241  oc get svc
+  242  oc expose --port='8080' svc/hola
+  243  oc get route
+  244  curl http://hola-pudjsm-container-build.apps.ap46.prod.nextcle.com
+  245  oc delete project ${RHT_OCP4_DEV_USER}-container-build
+  246  podman images
+  247  lab container-build finish
+  248  podman images
+  249  cd ~/LAB/
+  250  history | tail -n 100 > chapter-2-container-build
