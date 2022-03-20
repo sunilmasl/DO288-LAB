@@ -1,0 +1,49 @@
+  331  clear
+  332  ##Designing Containerized Applications for OpenShift  ###
+  333  lab design-container start
+  334  cd DO288-apps/
+  335  git branch
+  336  git checkout main 
+  337  git checkout -b design-container
+  338  git branch
+  339  git push -u origin design-container
+  340  cat /home/student/DO288-apps/hello-java/Containerfile
+  341   source /usr/local/etc/ocp4.config
+  342  oc login -u ${RHT_OCP4_DEV_USER} -p ${RHT_OCP4_DEV_PASSWORD} ${RHT_OCP4_MASTER_API}
+  343   oc new-project ${RHT_OCP4_DEV_USER}-design-container
+  344  podman build --layers=false --format=docker -t do288-hello-java ./hello-java
+  345   podman tag do288-hello-java quay.io/${RHT_OCP4_QUAY_USER}/do288-hello-java
+  346  podman images
+  347  podman push quay.io/${RHT_OCP4_QUAY_USER}/do288-hello-java
+  348  oc new-app --name elvis quay.io/${RHT_OCP4_QUAY_USER}/do288-hello-java
+  349  oc get pod
+  350  oc logs elvis-59d79cf888-xfggt 
+  351  vim /home/student/DO288-apps/hello-java/Containerfile 
+  352  cd hello-java/
+  353  git commit -a -m "Fixed Containerfile to run with random user id on OpenShift"
+  354  git push 
+  355  cd ..
+  356  podman rmi -a --force
+  357  podman images
+  358  podman build --layers=false --format=docker -t do288-hello-java ./hello-java
+  359   podman tag do288-hello-java quay.io/${RHT_OCP4_QUAY_USER}/do288-hello-java
+  360   podman push quay.io/${RHT_OCP4_QUAY_USER}/do288-hello-java
+  364   oc delete project ${RHT_OCP4_DEV_USER}-design-container
+  365  oc new-project ${RHT_OCP4_DEV_USER}-design-container
+  366  oc project
+  367  oc new-project ${RHT_OCP4_DEV_USER}-design-container
+  368  oc new-app --name elvis quay.io/${RHT_OCP4_QUAY_USER}/do288-hello-java
+  369  oc get pod
+  370  oc get svc
+  371  oc get pod
+  372  oc expose svc elvis 
+  373  oc get route
+  375  curl http://elvis-${RHT_OCP4_DEV_USER}-design-container.${RHT_OCP4_WILDCARD_DOMAIN}/api/hello
+  376  oc create cm appconfig --from-literal APP_MSG="Elvis lives sunil"
+  377   oc describe cm/appconfig
+  378  oc set env deployment/elvis --from cm/appconfig
+  379  oc status
+  380  oc get pod
+  381  oc rsh elvis-7bcd4f957f-8fpsn env|grep APP_MSG
+  382  curl  http://elvis-${RHT_OCP4_DEV_USER}-design-container.${RHT_OCP4_WILDCARD_DOMAIN}/api/hello
+  384  lab design-container finish

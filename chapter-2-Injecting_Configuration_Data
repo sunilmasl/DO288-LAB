@@ -1,0 +1,43 @@
+  286  ###Injecting Configuration Data into an Application  ##
+  287  lab app-config start
+  288  cd DO288-apps
+  289  git branch
+  290  git checkout main
+  291  git checkout -b app-config 
+  292  git push -u origin app-config/
+  293  git push -u origin app-config
+  294  cat /home/student/DO288-apps/app-config/app.js
+  295  source /usr/local/etc/ocp4.config
+  296  oc login -u ${RHT_OCP4_DEV_USER} -p ${RHT_OCP4_DEV_PASSWORD} ${RHT_OCP4_MASTER_API}
+  297  oc new-project ${RHT_OCP4_DEV_USER}-app-config
+  298  oc new-app --name myapp --build-env npm_config_registry=http://${RHT_OCP4_NEXUS_SERVER}/repository/nodejs nodejs:12~https://github.com/${RHT_OCP4_GITHUB_USER}/DO288-apps#app-config --context-dir app-config
+  299  oc get bc
+  300  oc logs -f bc/myapp
+  301  oc get pod
+  302  oc get route
+  303  oc expose svc myapp
+  304  oc get route
+  305  curl http://myapp-pudjsm-app-config.apps.ap46.prod.nextcle.com  
+  306  curl http://myapp-pudjsm-app-config.apps.ap46.prod.nextcle.com
+  307   oc create configmap myappconf --from-literal APP_MSG="Test Message"
+  308  oc describe cm myappconf 
+  309  cat  /home/student/DO288-apps/app-config/myapp.sec
+  310  oc create secret generic myappfilesec --from-file /home/student/DO288-apps/app-config/myapp.sec
+  311  oc get secret/myappfilesec -o json
+  312  oc set env deployment/myapp --from configmap/myappconf
+  313  oc set volume deployment/myapp --add -t secret -m /opt/app-root/secure --name myappsec-vol --secret-name myappfilesec
+  314  oc status
+  315  oc get pod
+  316  oc rsh myapp-6c6f86b47b-7n876 |grep APP_MSG
+  317  oc rsh myapp-6c6f86b47b-7n876 env |grep APP_MSG
+  318  oc get route
+  319  curl http://http://myapp-${RHT_OCP4_DEV_USER}-app-config.${RHT_OCP4_WILDCARD_DOMAIN}
+  320  curl http://myapp-${RHT_OCP4_DEV_USER}-app-config.${RHT_OCP4_WILDCARD_DOMAIN}
+  321  oc edit cm/myappconf
+  322  oc describe cm/myappconf
+  323  oc delete pod myapp-6c6f86b47b-7n876 
+  324  curl http://myapp-${RHT_OCP4_DEV_USER}-app-config.${RHT_OCP4_WILDCARD_DOMAIN}
+  325  oc delete project ${RHT_OCP4_DEV_USER}-app-config
+  326  lab app-config finish
+  327  cd ~/LAB/
+  328  history | tail -n 60 > chapter-2-Injecting_Configuration_Data
